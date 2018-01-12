@@ -1,0 +1,41 @@
+group 'com.github.projectrake'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'maven'
+
+sourceCompatibility = 1.9
+targetCompatibility = 1.9
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile fileTree(dir: '../libs', include: '*.jar')
+    compile "io.dropwizard.metrics:metrics-core:3.2.+"
+
+    compile group: 'com.github.projectrake', name: 'hdbm', version: '1.0-SNAPSHOT'
+    compile group: 'com.github.projectrake', name: 'rakelib', version: '1.0-SNAPSHOT'
+    compile group: 'com.github.projectrake', name: 'injector', version: '1.0-SNAPSHOT'
+    compile group: 'org.hibernate', name: 'hibernate-core', version: '5.2.12.Final'
+}
+
+task copyToLib(type: Copy) {
+    into "$buildDir/libs"
+    from configurations.runtime.filter { !it.getName().contains("spigot") }
+}
+
+jar {
+    def classdeps = configurations.compile.collect { it.getName() } + configurations.compile.collect {
+        "libs/" + it.getName()
+    } + configurations.compile.collect { "../libs/" + it.getName() }
+
+    manifest {
+        attributes("Class-Path": classdeps.join(' '))
+    }
+}
+
+jar.dependsOn(copyToLib)

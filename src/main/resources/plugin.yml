@@ -1,0 +1,50 @@
+name: pin
+version: 1.0-SNAPSHOT
+description: A player name pinning plugin.
+author: psygate
+main: com.github.projectrake.pin.PinPlugin
+prefix: pin
+default-permission: op
+depend: [hdbm]
+
+commands:
+  renameplayer:
+    description: Renames a player by name.
+    aliases: [pinrp]
+    permission: pin.modify.player.rename
+    usage: /pinrenameplayer <oldname> <newname>
+
+  renameplayeruuid:
+    description: Renames a player by uuid.
+    aliases: [pinrpu]
+    permission: pin.modify.player.rename
+    usage: /pinrenameplayeruuid <uuid> <newname>
+
+  addplayer:
+    description: Adds a player by uuid and name to the database.
+    aliases: [pinap]
+    permission: pin.modify.player.add
+    usage: /addplayer <uuid> <newname>
+
+  flushcache:
+    description: Flushs the pin cache.
+    aliases: [pinfc]
+    permission: pin.cache.flush
+    usage: /flushcache
+
+permissions:
+  pin.*:
+    description: Gives access to all pin commands
+    default: op
+    children:
+      pin.modify.player.rename: true
+      pin.cache.flush: true
+      pin.cache.flush: true
+
+  pin.modify.player.rename:
+    description: Allows players to rename others.
+    default: op
+
+  pin.cache.flush:
+    description: Allows players to flush the cache.
+    default: op
